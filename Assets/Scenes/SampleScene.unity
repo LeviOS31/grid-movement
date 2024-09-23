@@ -365,6 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentx: 2
   currenty: 3
+  moving: 0
   gridcontroller: {fileID: 1387762921}
 --- !u!1 &705507993
 GameObject:
@@ -650,10 +651,11 @@ MonoBehaviour:
   leftBottomLocation: {x: 0, y: 0, z: 0}
   startx: 1
   starty: 1
-  endx: 6
-  endy: 2
+  endx: -1
+  endy: -1
   path: []
   pathMat: {fileID: 2100000, guid: 59ae4eaa478e48e4aa3b9a12955990e9, type: 2}
+  GridMat: {fileID: 2100000, guid: 9824ae7672d22664ba4c476555f7b0d3, type: 2}
   playerchar: {fileID: 293690382}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

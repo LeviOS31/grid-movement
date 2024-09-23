@@ -13,10 +13,11 @@ public class GridBehaviour : MonoBehaviour
     public GameObject[,] gridarray;
     public int startx = 1;
     public int starty = 1;
-    public int endx = 5;
-    public int endy = 5;
+    public int endx = -1;
+    public int endy = -1;
     public List<GameObject> path = new List<GameObject>();
     public Material pathMat;
+    public Material GridMat;
     public GameObject playerchar;
     // Start is called before the first frame update
     private void Awake() {
@@ -163,6 +164,15 @@ public class GridBehaviour : MonoBehaviour
         }
 
         Debug.Log(path.Count);
+        foreach(GameObject obj in gridarray)
+        {
+            Material[] materials = obj.GetComponent<Renderer>().materials;
+            // Replace the first material with the new pathMat
+            materials[0] = GridMat;
+            // Assign the updated materials array back to the Renderer
+            obj.GetComponent<Renderer>().materials = materials;
+        }
+
         foreach(GameObject obj in path)
         {
             Debug.Log(obj.GetComponent<Gridstat>().x + " " + obj.GetComponent<Gridstat>().y);
