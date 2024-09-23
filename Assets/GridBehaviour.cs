@@ -16,6 +16,8 @@ public class GridBehaviour : MonoBehaviour
     public int endx = 5;
     public int endy = 5;
     public List<GameObject> path = new List<GameObject>();
+    public Material pathMat;
+    public GameObject playerchar;
     // Start is called before the first frame update
     private void Awake() {
 
@@ -25,15 +27,16 @@ public class GridBehaviour : MonoBehaviour
             GenerateGrid();
         }   
         else{
-            print("ow ow this is wrong");
+            Debug.Log("ow ow this is wrong");
         }
     }
     
     void Start()
     {
-        initalsetup();    
+        initalsetup();
+        //setDistance();
     }
-    // Update is called once per frame
+    
     void Update()
     {
         
@@ -53,20 +56,42 @@ public class GridBehaviour : MonoBehaviour
         }
     }
 
-    void setDistance(){
+    public void setDistance(){
         initalsetup();
         int x = startx;
         int y = starty;
 
         int[] testarray =  new int[rows*columns];
-        for(int step = 1; step < rows*columns; step++){
-            foreach(GameObject obj in gridarray){
-                if(gridarray[obj.GetComponent<Gridstat>().x, obj.GetComponent<Gridstat>().y] == gridarray[endx, endy])
-                if(obj.GetComponent<Gridstat>().visited == step --){
-                    TestEightDirections(obj.GetComponent<Gridstat>().x,obj.GetComponent<Gridstat>().y,step);
+
+        for (int step = 1; step < rows * columns; step++)
+        {
+            bool pathFound = false; // Add a flag to break the loop when path is found
+
+            foreach (GameObject obj in gridarray)
+            {
+                Gridstat stats = obj.GetComponent<Gridstat>();
+
+                if (stats.visited == step - 1) // Decrement outside the condition
+                {
+                    if (stats.x == endx && stats.y == endy)
+                    {
+                        //Debug.Log(stats.x + " " + stats.y);
+                        Debug.Log("found path");
+                        pathFound = true; // Mark path found
+                        break; // Exit early when path is found
+                    }
+                    TestEightDirections(stats.x, stats.y, step);
                 }
+                
+               //Debug.Log(stats.x + " " + stats.y + " " + stats.visited);
             }
+
+            if (pathFound){
+                break; // Exit outer loop when the path is found
+            }
+
         }
+        setpath();
     }
 
     void setpath(){
@@ -82,48 +107,82 @@ public class GridBehaviour : MonoBehaviour
             step = gridarray[x,y].GetComponent<Gridstat>().visited - 1;
         }
         else{
-            print("this is very very bad");
+            Debug.Log("this is very very bad");
             return;
         }
 
-        for(int i = step; step > -1; step--)
+        while (step >= 0)
         {
-            if(Testdirection(x,y,step, 1)){
-                templist.Add(gridarray[x,y+1]);
+            if (Testdirection(x, y, step, 1))
+            {
+                y += 1; // Move up
+            }
+            else if (Testdirection(x, y, step, 3))
+            {
+                x += 1; // Move right
+            }
+            else if (Testdirection(x, y, step, 5))
+            {
+                y -= 1; // Move down
+            }
+            else if (Testdirection(x, y, step, 7))
+            {
+                x -= 1; // Move left
+            }
+            else if (Testdirection(x, y, step, 2))
+            {
+                x += 1;
+                y += 1; // Move up-right
+            }
+            else if (Testdirection(x, y, step, 4))
+            {
+                x += 1;
+                y -= 1; // Move down-right
+            }
+            else if (Testdirection(x, y, step, 6))
+            {
+                x -= 1;
+                y -= 1; // Move down-left
+            }
+            else if (Testdirection(x, y, step, 8))
+            {
+                x -= 1;
+                y += 1; // Move up-left
+            }
+            else
+            {
+                Debug.Log("No valid direction found");
                 break;
             }
-            if(Testdirection(x,y,step, 2)){
-                templist.Add(gridarray[x+1,y+1]);
-                break;
-            }
-            if(Testdirection(x,y,step, 3)){
-                templist.Add(gridarray[x+1,y]);
-                break;
-            }
-            if(Testdirection(x,y,step, 4)){
-                templist.Add(gridarray[x+1,y-1]);
-                break;
-            }
-            if(Testdirection(x,y,step, 5)){
-                templist.Add(gridarray[x,y-1]);
-                break;
-            }
-            if(Testdirection(x,y,step, 6)){
-                templist.Add(gridarray[x-1,y-1]);
-                break;
-            }
-            if(Testdirection(x,y,step, 7)){
-                templist.Add(gridarray[x-1,y]);
-                break;
-            }
-            if(Testdirection(x,y,step, 8)){
-                templist.Add(gridarray[x-1,y+1]);
-                break;
-            }
+
+            // Add the new grid position to the path
+            path.Add(gridarray[x, y]);
+
+            // Update the step to the next point's visited value
+            step--;
+        }
+
+        Debug.Log(path.Count);
+        foreach(GameObject obj in path)
+        {
+            Debug.Log(obj.GetComponent<Gridstat>().x + " " + obj.GetComponent<Gridstat>().y);
+
+            Material[] materials = obj.GetComponent<Renderer>().materials;
+            // Replace the first material with the new pathMat
+            materials[0] = pathMat;
+            // Assign the updated materials array back to the Renderer
+            obj.GetComponent<Renderer>().materials = materials;
         }
     }
 
     void initalsetup(){
+
+        int startx = playerchar.GetComponent<player>().currentx;
+        int starty = playerchar.GetComponent<player>().currenty;
+
+        GameObject objpos = gridarray[startx, starty];
+        playerchar.transform.position = objpos.transform.position;
+
         foreach(GameObject obj in gridarray)
         {
             obj.GetComponent<Gridstat>().visited = -1;
