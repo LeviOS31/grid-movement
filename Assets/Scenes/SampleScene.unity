@@ -366,6 +366,8 @@ MonoBehaviour:
   currentx: 2
   currenty: 3
   moving: 0
+  currentpath: []
+  maxdistance: 6
   gridcontroller: {fileID: 1387762921}
 --- !u!1 &705507993
 GameObject:
@@ -655,7 +657,8 @@ MonoBehaviour:
   endy: -1
   path: []
   pathMat: {fileID: 2100000, guid: 59ae4eaa478e48e4aa3b9a12955990e9, type: 2}
-  GridMat: {fileID: 2100000, guid: 9824ae7672d22664ba4c476555f7b0d3, type: 2}
+  gridMat: {fileID: 2100000, guid: 9824ae7672d22664ba4c476555f7b0d3, type: 2}
+  availableMat: {fileID: 2100000, guid: 75be4cf70509a3648b531955d067ce5c, type: 2}
   playerchar: {fileID: 293690382}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

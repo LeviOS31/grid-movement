@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -16,8 +17,9 @@ public class GridBehaviour : MonoBehaviour
     public int endx = -1;
     public int endy = -1;
     public List<GameObject> path = new List<GameObject>();
-    public Material pathMat;
-    public Material GridMat;
+    //public Material pathMat;
+    //public Material gridMat;
+    //public Material availableMat;
     public GameObject playerchar;
     // Start is called before the first frame update
     private void Awake() {
@@ -57,14 +59,10 @@ public class GridBehaviour : MonoBehaviour
         }
     }
 
-    public void setDistance(){
+    public void setDistance(int maxdistance){
         initalsetup();
-        int x = startx;
-        int y = starty;
 
-        int[] testarray =  new int[rows*columns];
-
-        for (int step = 1; step < rows * columns; step++)
+        for (int step = 1; step < maxdistance; step++)
         {
             bool pathFound = false; // Add a flag to break the loop when path is found
 
@@ -166,29 +164,21 @@ public class GridBehaviour : MonoBehaviour
         Debug.Log(path.Count);
         foreach(GameObject obj in gridarray)
         {
-            Material[] materials = obj.GetComponent<Renderer>().materials;
-            // Replace the first material with the new pathMat
-            materials[0] = GridMat;
-            // Assign the updated materials array back to the Renderer
-            obj.GetComponent<Renderer>().materials = materials;
+            obj.GetComponent<Renderer>().material.color = new Color(0f,0f,1f,0.5f);
         }
 
         foreach(GameObject obj in path)
         {
             Debug.Log(obj.GetComponent<Gridstat>().x + " " + obj.GetComponent<Gridstat>().y);
 
-            Material[] materials = obj.GetComponent<Renderer>().materials;
-            // Replace the first material with the new pathMat
-            materials[0] = pathMat;
-            // Assign the updated materials array back to the Renderer
-            obj.GetComponent<Renderer>().materials = materials;
+            obj.GetComponent<Renderer>().material.color = new Color(1f,0f,0f,0.5f);
         }
     }
 
     void initalsetup(){
 
-        int startx = playerchar.GetComponent<player>().currentx;
-        int starty = playerchar.GetComponent<player>().currenty;
+        startx = playerchar.GetComponent<player>().currentx;
+        starty = playerchar.GetComponent<player>().currenty;
 
         GameObject objpos = gridarray[startx, starty];
         playerchar.transform.position = objpos.transform.position;
@@ -199,6 +189,21 @@ public class GridBehaviour : MonoBehaviour
         }
 
         gridarray[startx, starty].GetComponent<Gridstat>().visited = 0;
+    }
+
+    public void Clearavailable(){
+        foreach(GameObject obj in gridarray)
+        {
+            obj.GetComponent<Renderer>().material.color = new Vector4(0f,0f,1f,0.5f);
+        }
+    }
+
+    public void ClearPath(){
+        path.Clear();
+
+        foreach (GameObject obj in gridarray) {
+            obj.GetComponent<Renderer>().material.color = new Vector4(0f,0f,1f,0.5f);
+        }
     }
 
     bool Testdirection(int x, int y, int step, int direction)
@@ -307,6 +312,35 @@ public class GridBehaviour : MonoBehaviour
     void setvisited (int x, int y, int step){
         if(gridarray[x,y]){
             gridarray[x,y].GetComponent<Gridstat>().visited = step;
+        }
+    }
+
+    public void visualmaxdistance(int maxdistance)
+    {
+        maxdistance = maxdistance - 1;
+        //initalsetup();
+        int x = playerchar.GetComponent<player>().currentx;
+        int y = playerchar.GetComponent<player>().currenty;
+
+        for (int i = 0; i < columns; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+
+                int distance = Mathf.Abs(i - x) + Mathf.Abs(j - y);
+
+                // Check if this grid square falls within the max distance
+                if (distance <= maxdistance)
+                {
+                    if(gridarray[i,j].GetComponent<Renderer>().material.color == new Color(1f,0f,0f,0.5f)){
+                        continue;
+                    }
+                    gridarray[i, j].GetComponent<Renderer>().material.color = new Color(0f,1f,0f,0.5f);
+                }
+                else{
+                    gridarray[i, j].GetComponent<Renderer>().material.color = new Color(0f,0f,1f,0.5f);
+                }
+            }
         }
     }
 }
