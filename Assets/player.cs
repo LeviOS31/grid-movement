@@ -54,9 +54,7 @@ public class player : MonoBehaviour
 
     async void move()
     {
-        currentpath.Remove(currentpath.Last());
-        Debug.Log(currentpath);
-        
+        currentpath.Remove(currentpath.Last());        
         
         while(currentpath.Count > 0)
         {

@@ -74,15 +74,11 @@ public class GridBehaviour : MonoBehaviour
                 {
                     if (stats.x == endx && stats.y == endy)
                     {
-                        //Debug.Log(stats.x + " " + stats.y);
-                        Debug.Log("found path");
                         pathFound = true; // Mark path found
                         break; // Exit early when path is found
                     }
                     TestEightDirections(stats.x, stats.y, step);
                 }
-                
-               //Debug.Log(stats.x + " " + stats.y + " " + stats.visited);
             }
 
             if (pathFound){
@@ -161,17 +157,14 @@ public class GridBehaviour : MonoBehaviour
             step--;
         }
 
-        Debug.Log(path.Count);
         foreach(GameObject obj in gridarray)
         {
-            obj.GetComponent<Renderer>().material.color = new Color(0f,0f,1f,0.5f);
+            obj.GetComponent<Renderer>().material.color = new Color(0f,0.39f,65f,0.5f);
         }
 
         foreach(GameObject obj in path)
         {
-            Debug.Log(obj.GetComponent<Gridstat>().x + " " + obj.GetComponent<Gridstat>().y);
-
-            obj.GetComponent<Renderer>().material.color = new Color(1f,0f,0f,0.5f);
+            obj.GetComponent<Renderer>().material.color = new Color(1f, 0f, 0.01f,0.5f);
         }
     }
 
@@ -194,7 +187,7 @@ public class GridBehaviour : MonoBehaviour
     public void Clearavailable(){
         foreach(GameObject obj in gridarray)
         {
-            obj.GetComponent<Renderer>().material.color = new Vector4(0f,0f,1f,0.5f);
+            obj.GetComponent<Renderer>().material.color = new Color(0f,0.39f,0.65f,0.5f);
         }
     }
 
@@ -202,7 +195,7 @@ public class GridBehaviour : MonoBehaviour
         path.Clear();
 
         foreach (GameObject obj in gridarray) {
-            obj.GetComponent<Renderer>().material.color = new Vector4(0f,0f,1f,0.5f);
+            obj.GetComponent<Renderer>().material.color = new Color(0f,0.39f,0.65f,0.5f);
         }
     }
 
@@ -213,7 +206,7 @@ public class GridBehaviour : MonoBehaviour
 
         switch(direction){
             case 1:
-                if(y + 1 < rows && gridarray[x,y+1] && gridarray[x,y+1].GetComponent<Gridstat>().visited == step){
+                if(y + 1 < rows && gridarray[x,y+1] && gridarray[x,y+1].GetComponent<Gridstat>().visited == step && gridarray[x,y+1].GetComponent<Gridstat>().traversable){
                     return true;
                 }
                 else{
@@ -221,7 +214,7 @@ public class GridBehaviour : MonoBehaviour
                 }
 
             case 2:
-                if(y + 1 < rows && x + 1 < columns && gridarray[x + 1,y + 1] && gridarray[x + 1,y + 1].GetComponent<Gridstat>().visited == step){
+                if(y + 1 < rows && x + 1 < columns && gridarray[x + 1,y + 1] && gridarray[x + 1,y + 1].GetComponent<Gridstat>().visited == step && gridarray[x + 1,y + 1].GetComponent<Gridstat>().traversable){
                     return true;
                 }
                 else{
@@ -229,7 +222,7 @@ public class GridBehaviour : MonoBehaviour
                 }
                 
             case 3:
-                if(x + 1 < columns && gridarray[x + 1,y] && gridarray[x + 1,y].GetComponent<Gridstat>().visited == step){
+                if(x + 1 < columns && gridarray[x + 1,y] && gridarray[x + 1,y].GetComponent<Gridstat>().visited == step && gridarray[x + 1,y].GetComponent<Gridstat>().traversable){
                     return true;
                 }
                 else{
@@ -237,7 +230,7 @@ public class GridBehaviour : MonoBehaviour
                 }
 
             case 4:
-                if(y - 1 > -1 && x + 1 < columns && gridarray[x + 1,y - 1] && gridarray[x + 1,y - 1].GetComponent<Gridstat>().visited == step){
+                if(y - 1 > -1 && x + 1 < columns && gridarray[x + 1,y - 1] && gridarray[x + 1,y - 1].GetComponent<Gridstat>().visited == step && gridarray[x + 1,y - 1].GetComponent<Gridstat>().traversable){
                     return true;
                 }
                 else{
@@ -245,7 +238,7 @@ public class GridBehaviour : MonoBehaviour
                 }
 
             case 5:
-                if(y - 1 > -1 && gridarray[x,y-1] && gridarray[x,y-1].GetComponent<Gridstat>().visited == step){
+                if(y - 1 > -1 && gridarray[x,y-1] && gridarray[x,y-1].GetComponent<Gridstat>().visited == step && gridarray[x,y - 1].GetComponent<Gridstat>().traversable){
                     return true;
                 }
                 else{
@@ -253,7 +246,7 @@ public class GridBehaviour : MonoBehaviour
                 }
 
             case 6:
-                if(y - 1 > -1 && x - 1 > -1 && gridarray[x - 1,y - 1] && gridarray[x - 1,y - 1].GetComponent<Gridstat>().visited == step){
+                if(y - 1 > -1 && x - 1 > -1 && gridarray[x - 1,y - 1] && gridarray[x - 1,y - 1].GetComponent<Gridstat>().visited == step && gridarray[x - 1,y - 1].GetComponent<Gridstat>().traversable){
                     return true;
                 }
                 else{
@@ -261,7 +254,7 @@ public class GridBehaviour : MonoBehaviour
                 }
 
             case 7:
-                if(x - 1 > -1 && gridarray[x-1,y] && gridarray[x-1,y].GetComponent<Gridstat>().visited == step){
+                if(x - 1 > -1 && gridarray[x-1,y] && gridarray[x-1,y].GetComponent<Gridstat>().visited == step && gridarray[x - 1,y].GetComponent<Gridstat>().traversable){
                     return true;
                 }
                 else{
@@ -269,7 +262,7 @@ public class GridBehaviour : MonoBehaviour
                 }
 
             case 8:
-                if(y + 1 < rows && x - 1 > -1 && gridarray[x - 1,y + 1] && gridarray[x - 1,y + 1].GetComponent<Gridstat>().visited == step){
+                if(y + 1 < rows && x - 1 > -1 && gridarray[x - 1,y + 1] && gridarray[x - 1,y + 1].GetComponent<Gridstat>().visited == step && gridarray[x - 1,y + 1].GetComponent<Gridstat>().traversable){
                     return true;
                 }
                 else{
@@ -332,13 +325,13 @@ public class GridBehaviour : MonoBehaviour
                 // Check if this grid square falls within the max distance
                 if (distance <= maxdistance)
                 {
-                    if(gridarray[i,j].GetComponent<Renderer>().material.color == new Color(1f,0f,0f,0.5f)){
+                    if(gridarray[i,j].GetComponent<Renderer>().material.color == new Color(1f, 0f, 0.01f ,0.5f)){
                         continue;
                     }
-                    gridarray[i, j].GetComponent<Renderer>().material.color = new Color(0f,1f,0f,0.5f);
+                    gridarray[i, j].GetComponent<Renderer>().material.color = new Color(0f,0.77f,0f,0.5f);
                 }
                 else{
-                    gridarray[i, j].GetComponent<Renderer>().material.color = new Color(0f,0f,1f,0.5f);
+                    gridarray[i, j].GetComponent<Renderer>().material.color = new Color(0f,0.39f,0.65f,0.5f);
                 }
             }
         }
